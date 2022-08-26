@@ -23,36 +23,45 @@ import { Link as RouteLink }  from 'react-router-dom'
 import DeveloperShowPreview from "../shared/DeveloperShow"
 import { increaseLike, decreaseLike } from "../../api/like";
 
-
-const ProjectCard = ({msgAlert, user, triggerRefresh, project}) => {
+const ProjectCard = ({msgAlert, user, triggerRefresh, project, handleChange}) => {
   const [commentToggle, setCommentToggle] = useState(false)
   const [like, setLike ] = useState(project.likes.length)
 
-    const tagSidebar = project.tags.map((tag)=>(
-      <WrapItem>
-          <Badge borderRadius='full' px='2' colorScheme='linkedin' variant='solid' mr='1'>
+  
+  const tagSidebar = project.tags.map((tag)=>(
+    <WrapItem>
+          <Badge borderRadius='full' px='2' colorScheme='linkedin' variant='solid' mr='1' onClick={() => {
+          let searchBox = document.getElementById('search') 
+          console.log('here is SB', searchBox)
+          console.log(tag)
+          searchBox.value = tag
+          searchBox.dispatchEvent(new Event('change'))
+          console.log(searchBox.value)
+          } }
+          // onChange={handleChange}
+          >
             {tag}
           </Badge>
       </WrapItem>
   ))
   //like color setup
   let myColor
-    if (user) {
-      if (project.likes.includes(user._id)) {
-        myColor = 'red'
-      } else {
-        myColor = 'yellow'
-      }
-      }
-    // handle like function  
-    const addLike = () => {
-      if (!project.likes.includes(user._id)) {
-        increaseLike(user, project._id)
-          .then(() => {
-            myColor = 'white'
-            triggerRefresh()
-            setLike(project.likes.length)
-          })
+  if (user) {
+    if (project.likes.includes(user._id)) {
+      myColor = 'red'
+    } else {
+      myColor = 'yellow'
+    }
+  }
+  // handle like function  
+  const addLike = () => {
+    if (!project.likes.includes(user._id)) {
+      increaseLike(user, project._id)
+      .then(() => {
+        myColor = 'white'
+        triggerRefresh()
+        setLike(project.likes.length)
+      })
           .catch(err => {
             msgAlert({
               heading: 'Error',
@@ -61,8 +70,8 @@ const ProjectCard = ({msgAlert, user, triggerRefresh, project}) => {
             })
             console.log(err)
           })
-      } else {
-        decreaseLike(user, project._id)
+        } else {
+          decreaseLike(user, project._id)
           .then(() => {
             myColor = 'white'
             triggerRefresh()
@@ -76,21 +85,24 @@ const ProjectCard = ({msgAlert, user, triggerRefresh, project}) => {
             })
             console.log(err)
           })
+        }
       }
-    }
-  return (
-  <Box backgroundColor="rgba(255, 255, 255, 0.2)" maxW='250px' minW='330px' borderWidth='1px' borderRadius='lg' overflow='hidden' margin='20px' key={project._id} style={{zIndex: '1', color: 'white'}}>
+
+
+
+      return (
+        <Box backgroundColor="rgba(255, 255, 255, 0.2)" maxW='250px' minW='330px' borderWidth='1px' borderRadius='lg' overflow='hidden' margin='20px' key={project._id} style={{zIndex: '1', color: 'white'}}>
      <Box display='flex' alignItems='center'>
-            {user ? 
+       {user ? 
               // like icon
               <Image 
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Love_Heart_symbol.svg/2250px-Love_Heart_symbol.svg.png"
-                width='18px'
-                height='18px'
-                mt='2'
-                ml='87%'
-                mb='-7'
-                onClick={() => addLike()}
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Love_Heart_symbol.svg/2250px-Love_Heart_symbol.svg.png"
+              width='18px'
+              height='18px'
+              mt='2'
+              ml='87%'
+              mb='-7'
+              onClick={() => addLike()}
               />
               :
               <Text mb='-7' ml='79%'>

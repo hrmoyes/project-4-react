@@ -42,6 +42,8 @@ const ProjectIndex = ({ user, msgAlert }) => {
   }, [updated]);
 
   let handleChange = (e) => {
+    console.log(e)
+    console.log('hello?', e.target)
     let arr = projects.filter((project) => {
       if (e.target.value !== "") {
         console.log(e)
@@ -101,7 +103,8 @@ const ProjectIndex = ({ user, msgAlert }) => {
       msgAlert={msgAlert}
       triggerRefresh={() => setUpdated((prev) => !prev)}
       project={project}
-      
+      onChange={handleChange}
+      handleChange={handleChange}
     />
   ));
 
